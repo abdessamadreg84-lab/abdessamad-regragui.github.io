@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculation in Chess — Abdessamad Regragui</title>
+
+    <meta name="description" content="A relational framework for chess calculation: state changes, reachability, force, opponent responses, prediction, and updating the position.">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <nav class="nav">
+        <a href="index.html" class="logo">Abdessamad Regragui</a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="forces-of-reading-and-chess.html">Reading & Chess</a>
+            <a href="forces-of-reading.html">Reading</a>
+            <a href="inference-and-prediction.html">Inference & Prediction</a>
+            <a href="two-whys.html">Two Whys</a>
+            <a href="forces-of-chess.html">Chess</a>
+            <a href="six-forces.html">Six Forces</a>
+            <a href="calculation.html">Calculation</a>
+            <a href="concepts.html">Concepts</a>
+            <a href="about.html">About</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+
+<section class="hero">
+
+    <p class="eyebrow">CALCULATION</p>
+
+    <h1>
+        Don't calculate moves.<br>
+        Calculate change.
+    </h1>
+
+    <p class="intro">
+        A move is only the beginning of a calculation. The real
+        object is the resulting state, the relations that changed,
+        and what the new position allows.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">THE BASIC TRANSFORMATION</p>
+
+    <h2>A chess position is a state.</h2>
+
+    <p>
+        A position contains more than the locations of the pieces.
+        It contains the relevant relationships between them:
+        occupancy, reach, attacks, supports, constraints, blocks,
+        duties, dependencies, and available possibilities.
+    </p>
+
+    <div class="large-formula">
+        STATE₀ → MOVE → STATE₁
+    </div>
+
+    <p>
+        Calculation is the projection of this transformation through
+        its consequences.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">THE REAL OBJECT</p>
+
+    <h2>What changes because the piece moved?</h2>
+
+    <p>
+        A beginner may look at a move and primarily register the
+        destination square.
+    </p>
+
+    <p>
+        A relational calculation asks what the move does to the
+        entire position.
+    </p>
+
+    <div class="large-formula">
+        MOVE → RESULTING STATE → NEW RELATIONS
+    </div>
+
+    <div class="three-columns">
+
+        <div class="concept-card">
+            <h3>Opened</h3>
+            <p>
+                Which line, square, or route became available?
+            </p>
+        </div>
+
+        <div class="concept-card">
+            <h3>Removed</h3>
+            <p>
+                Which piece, defender, blocker, or restriction disappeared?
+            </p>
+        </div>
+
+        <div class="concept-card">
+            <h3>Created</h3>
+            <p>
+                Which new attack, support, threat, or dependency appeared?
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">REACH MUST BE REBUILT</p>
+
+    <h2>The old position is no longer the current position.</h2>
+
+    <p>
+        Once a meaningful change occurs, the previous reach map is
+        partly obsolete. A piece that was blocked may now be active.
+        A defended square may become undefended. A line may open.
+        A new counterattack may appear.
+    </p>
+
+    <div class="large-formula">
+        OLD POSITION → CHANGE → NEW REACH MAP
+    </div>
+
+    <p>
+        This is why calculation is not simply remembering a sequence
+        of moves. Each meaningful state has to be read again.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">THE CALCULATION LOOP</p>
+
+    <h2>See. Change. Reconstruct. Read.</h2>
+
+    <div class="calculation">
+
+        <div>SEE CURRENT STATE</div>
+        <div>↓</div>
+
+        <div>MAKE A CANDIDATE CHANGE</div>
+        <div>↓</div>
+
+        <div>RECONSTRUCT THE NEW STATE</div>
+        <div>↓</div>
+
+        <div>READ THE NEW RELATIONS</div>
+        <div>↓</div>
+
+        <div>SEE THE OPPONENT'S RESPONSE</div>
+        <div>↓</div>
+
+        <div>UPDATE THE MODEL</div>
+
+    </div>
+
+    <p>
+        The process then repeats from the new state.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">THE EIGHT QUESTIONS</p>
+
+    <h2>A practical calculation checklist.</h2>
+
+    <div class="calculation">
+
+        <div>1. WHAT CAN REACH WHAT?</div>
+        <div>↓</div>
+
+        <div>2. WHAT IS ACTUALLY THERE?</div>
+        <div>↓</div>
+
+        <div>3. WHAT IS STOPPING IT?</div>
+        <div>↓</div>
+
+        <div>4. WHAT CAN THE RELATION DO?</div>
+        <div>↓</div>
+
+        <div>5. IS THE FORCE ACTIVE OR CONDITIONAL?</div>
+        <div>↓</div>
+
+        <div>6. WHAT WOULD THE INTERACTION PRODUCE?</div>
+        <div>↓</div>
+
+        <div>7. WHAT WOULD ACTUALLY BE DIFFERENT?</div>
+        <div>↓</div>
+
+        <div>8. WHAT DOES THE NEW POSITION ALLOW?</div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">01 · REACH</p>
+
+    <h2>What can reach what?</h2>
+
+    <p>
+        Start with the relationships that can actually exist in the
+        current position.
+    </p>
+
+    <div class="large-formula">
+        REACH = AVAILABLE INTERACTION
+    </div>
+
+    <p>
+        Look at lines, attacks, supports, movement possibilities,
+        escape squares, and routes through the current occupancy.
+    </p>
+
+    <p>
+        The question is not simply what a piece theoretically does.
+        It is what it can actually reach here.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">02 · OCCUPANCY</p>
+
+    <h2>What is actually there?</h2>
+
+    <p>
+        Before projecting a change, account for the pieces and
+        squares that make the current position what it is.
+    </p>
+
+    <div class="formula">
+        REACH + OCCUPANCY → CURRENT FUNCTION
+    </div>
+
+    <p>
+        Occupancy can create support, attack, obstruction, protection,
+        tactical targets, or restrictions.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">03 · CONSTRAINT</p>
+
+    <h2>What is stopping the desired relation?</h2>
+
+    <p>
+        A useful calculation often becomes clearer once the obstacle
+        is identified.
+    </p>
+
+    <div class="large-formula">
+        CAPABILITY → CONSTRAINT → LIMITED EXPRESSION
+    </div>
+
+    <p>
+        The obstacle might be a blocker, defender, king safety rule,
+        occupied square, tactical duty, or another dependency.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">04 · FORCE</p>
+
+    <h2>What can the relation do?</h2>
+
+    <p>
+        Once a relation is identified, ask what it can change.
+    </p>
+
+    <div class="large-formula">
+        RELATION → FORCE → POSSIBLE CHANGE
+    </div>
+
+    <p>
+        Can it push? Pull? Redirect? Release? Create tension?
+        Block something?
+    </p>
+
+    <p>
+        This shifts calculation from naming patterns toward
+        understanding their function.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">05 · TENSE</p>
+
+    <h2>Is the force active now or only after a change?</h2>
+
+    <div class="comparison">
+
+        <div class="concept-card">
+            <h3>Active</h3>
+            <p>
+                The relation can currently express itself.
+            </p>
+        </div>
+
+        <div class="concept-card">
+            <h3>Conditional</h3>
+            <p>
+                The relation becomes available only if a state
+                transformation occurs.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="formula">
+        CURRENT FORCE ≠ FUTURE FORCE
+    </div>
+
+    <p>
+        This distinction prevents possible tactical ideas from being
+        mistaken for current facts.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">06 · RESULTANT</p>
+
+    <h2>What would the interaction actually produce?</h2>
+
+    <p>
+        Do not stop at the intention of the move.
+        Follow the interaction.
+    </p>
+
+    <div class="large-formula">
+        FORCE → INTERACTION → RESULTANT
+    </div>
+
+    <p>
+        The resultant could be a capture, opened line, removed
+        defender, restriction, discovered attack, changed duty,
+        escape square, or another structural transformation.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">07 · CHANGE</p>
+
+    <h2>What would actually be different?</h2>
+
+    <p>
+        This is the central calculation question.
+    </p>
+
+    <blockquote>
+        What changed because of the move?
+    </blockquote>
+
+    <div class="two-columns">
+
+        <div class="concept-card">
+            <h3>Before</h3>
+            <p>
+                What could reach what? What was blocked? Who defended
+                what? Which duties existed?
+            </p>
+        </div>
+
+        <div class="concept-card">
+            <h3>After</h3>
+            <p>
+                Which of those relationships disappeared, appeared,
+                strengthened, weakened, opened, or changed direction?
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">08 · NEW REACH</p>
+
+    <h2>What does the new position allow?</h2>
+
+    <p>
+        After the transformation, return to the first question.
+    </p>
+
+    <div class="large-formula">
+        CHANGE → NEW STATE → NEW REACH
+    </div>
+
+    <p>
+        The cycle is recursive. Every meaningful state becomes the
+        starting point for the next calculation.
+    </p>
+
+</section>
+
+
+<section class="connection">
+
+    <p class="section-label">THE COMPLETE LOOP</p>
+
+    <h2>Calculation is recursive.</h2>
+
+    <div class="large-formula">
+        REACH → OCCUPANCY → CONSTRAINT<br>
+        → FORCE → TENSE → RESULTANT<br>
+        → CHANGE → REACH
+    </div>
+
+    <p>
+        The final step returns to reach because the new position has
+        a different relational structure.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">THE OPPONENT</p>
+
+    <h2>The opponent is part of the model.</h2>
+
+    <p>
+        Your move changes the opponent's available possibilities.
+        Their response then changes the state again.
+    </p>
+
+    <div class="large-formula">
+        MY MOVE → OPPONENT'S AVAILABLE CHANGES → NEW STATE
+    </div>
+
+    <p>
+        Calculation therefore cannot be only a projection of your
+        own actions. It must include another agent who can transform
+        the resulting position.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">BRANCHING</p>
+
+    <h2>The future is conditional.</h2>
+
+    <p>
+        A candidate move creates a new state. From that state,
+        the opponent may have several meaningful responses.
+        Each response produces another state.
+    </p>
+
+    <div class="large-formula">
+        STATE₀<br>
+        ↓<br>
+        MY MOVE<br>
+        ↓<br>
+        STATE₁<br>
+        ↙ ↓ ↘<br>
+        RESPONSE A · RESPONSE B · RESPONSE C
+    </div>
+
+    <p>
+        Calculation does not require exploring every theoretical
+        branch. Purpose and relevance determine which transformations
+        deserve attention.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">DIRECTION · OBSTACLE · MECHANISM</p>
+
+    <h2>Purpose tells calculation where to look.</h2>
+
+    <div class="three-columns">
+
+        <div class="concept-card">
+            <h3>Direction</h3>
+            <p>
+                Where do I want the position to go?
+            </p>
+        </div>
+
+        <div class="concept-card">
+            <h3>Obstacle</h3>
+            <p>
+                What prevents that desired state?
+            </p>
+        </div>
+
+        <div class="concept-card">
+            <h3>Mechanism</h3>
+            <p>
+                What change could remove or overcome the obstacle?
+            </p>
+        </div>
+
+    </div>
+
+    <div class="large-formula">
+        PURPOSE → DIRECTION → OBSTACLE → MECHANISM
+    </div>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">PREDICTION</p>
+
+    <h2>Calculation is prediction through changing states.</h2>
+
+    <p>
+        Prediction in chess is not simply guessing the opponent's
+        next move. It is projecting what the current position will
+        allow after one or more transformations.
+    </p>
+
+    <div class="large-formula">
+        CURRENT STATE → POSSIBLE TRANSFORMATION → FUTURE STATE
+    </div>
+
+    <p>
+        A useful question is:
+    </p>
+
+    <blockquote>
+        What will this position allow?
+    </blockquote>
+
+    <p>
+        And when considering the opponent:
+    </p>
+
+    <blockquote>
+        What will he see?
+    </blockquote>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">VISUAL CALCULATION</p>
+
+    <h2>Calculation does not require move names.</h2>
+
+    <p>
+        The framework does not require calculation to be verbal.
+        A player may represent future positions visually, spatially,
+        relationally, symbolically, or through combinations of these.
+    </p>
+
+    <div class="large-formula">
+        CURRENT STATE → TRANSFORMATION → PROJECTED STATE
+    </div>
+
+    <p>
+        The move label can be secondary. The important thing is the
+        changed state and the relationships inside it.
+    </p>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">THE PRACTICAL MENTAL LOOP</p>
+
+    <h2>A compact internal sequence.</h2>
+
+    <div class="calculation">
+
+        <div>SEE</div>
+        <div>↓</div>
+
+        <div>WHAT CHANGES?</div>
+        <div>↓</div>
+
+        <div>WHAT BECOMES POSSIBLE?</div>
+        <div>↓</div>
+
+        <div>WHAT CAN HE CHANGE?</div>
+        <div>↓</div>
+
+        <div>WHAT DOES THAT CHANGE?</div>
+        <div>↓</div>
+
+        <div>REBUILD THE POSITION</div>
+        <div>↓</div>
+
+        <div>SEE AGAIN</div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <p class="section-label">FROM READING TO CALCULATION</p>
+
+    <h2>The same general operation appears in both domains.</h2>
+
+    <div class="comparison">
+
+        <div class="concept-card">
+
+            <h3>Reading</h3>
+
+            <div class="small-formula">
+                WORDS → RELATIONS → MODEL
+            </div>
+
+            <p>
+                The reader uses the model to infer what is hidden,
+                predict what comes next, and update it.
+            </p>
+
+        </div>
+
+        <div class="concept-card">
+
+            <h3>Chess</h3>
+
+            <div class="small-formula">
+                PIECES → RELATIONS → POSITION
+            </div>
+
+            <p>
+                The player transforms the position, projects the
+                consequences, and reconstructs the new relations.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="large-formula">
+        SEE → RELATE → MODEL → PROJECT → UPDATE
+    </div>
+
+</section>
+
+
+<section class="final">
+
+    <p class="section-label">THE CORE OF CALCULATION</p>
+
+    <h2>
+        See the difference.<br>
+        See the consequence.<br>
+        See the direction.
+    </h2>
+
+    <p class="emphasis">
+        Then see what will happen here.
+    </p>
+
+</section>
+
+
+<section class="disclaimer">
+
+    <h3>About the framework</h3>
+
+    <p>
+        This is a functional framework for organizing chess
+        calculation. It is not presented as a literal description
+        of neural architecture or as a replacement for established
+        chess theory, calculation methods, or analysis.
+    </p>
+
+</section>
+
+</main>
+
+
+<footer>
+
+    <p>© 2026 Abdessamad Regragui</p>
+
+    <p>
+        <a href="index.html">Home</a> ·
+        <a href="forces-of-chess.html">Chess</a> ·
+        <a href="six-forces.html">Six Forces</a> ·
+        <a href="inference-and-prediction.html">Inference & Prediction</a> ·
+        <a href="about.html">About</a>
+    </p>
+
+</footer>
+
+</body>
+</html>
